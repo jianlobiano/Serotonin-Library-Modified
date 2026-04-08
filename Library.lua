@@ -83,8 +83,11 @@ do
 
 		FadeSpeed = 0.2,
 
-		Folders = {},
-
+		Folders = {
+			Directory = "uip100",
+			Configs = "uip100/Configs",
+			Assets = "uip100/Assets",
+		},
 
 		-- Ignore below
 		Pages = {},
@@ -3395,7 +3398,7 @@ do
 					Name = "\0",
 					ImageColor3 = FromRGB(255, 0, 0),
 					BorderColor3 = FromRGB(0, 0, 0),
-					Image = "rbxassetid://77298421442104",
+					Image = string.find(tostring(Window.Logo), "rbxassetid://") and Window.Logo or "rbxassetid://" .. tostring(Window.Logo),
 					BackgroundTransparency = 1,
 					Position = UDim2New(0, 8, 0, 10),
 					Size = UDim2New(0, 18, 0, 18),
