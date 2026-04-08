@@ -3335,7 +3335,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 50) or UDim2New(0.5, 0, 0.5, 0),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 60) or UDim2New(0.5, 0, 0.5, 10),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
