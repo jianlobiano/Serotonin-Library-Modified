@@ -83,11 +83,8 @@ do
 
 		FadeSpeed = 0.2,
 
-		Folders = {
-			Directory = "uip100",
-			Configs = "uip100/Configs",
-			Assets = "uip100/Assets",
-		},
+		Folders = {},
+
 
 		-- Ignore below
 		Pages = {},
@@ -209,12 +206,7 @@ do
 
 	Library.Theme = TableClone(Themes["Preset"])
 
-	-- Folders
-	for Index, Value in Library.Folders do
-		if not isfolder(Value) then
-			makefolder(Value)
-		end
-	end
+
 
 	-- Tweening
 	local Tween = {}
@@ -441,18 +433,25 @@ do
 
 			local Set = function(Input)
 				local DragDelta = Input.Position - DragStart
-				local NewX = StartPosition.X.Offset + DragDelta.X
-				local NewY = StartPosition.Y.Offset + DragDelta.Y
+				local targetAbsPos = StartPosition + Vector2New(DragDelta.X, DragDelta.Y)
 
 				local ScreenSize = Gui.Parent.AbsoluteSize
 				local GuiSize = Gui.AbsoluteSize
 
-				NewX = MathClamp(NewX, 0, ScreenSize.X - GuiSize.X)
-				NewY = MathClamp(NewY, 0, ScreenSize.Y - GuiSize.Y)
+				local minX = 0
+				local minY = -36 -- usually default roblox coregui inset ignore
+				local maxX = ScreenSize.X - GuiSize.X
+				local maxY = ScreenSize.Y - GuiSize.Y
+
+				local boundX = MathClamp(targetAbsPos.X, minX, maxX)
+				local boundY = MathClamp(targetAbsPos.Y, minY, maxY)
+
+				local offsetX = boundX + (Gui.AnchorPoint.X * GuiSize.X)
+				local offsetY = boundY + (Gui.AnchorPoint.Y * GuiSize.Y)
 
 				self:Tween(
 					TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-					{ Position = UDim2New(0, NewX, 0, NewY) }
+					{ Position = UDim2New(0, offsetX, 0, offsetY) }
 				)
 			end
 
@@ -465,7 +464,7 @@ do
 				then
 					Dragging = true
 					DragStart = Input.Position
-					StartPosition = Gui.Position
+					StartPosition = Gui.AbsolutePosition
 
 					if InputChanged then
 						return
@@ -552,6 +551,7 @@ do
 			}
 
 			local BeginResizing = function(Side)
+				if Library.Flags["UI Expand"] then return end
 				Resizing = true
 				CurrentSide = Side
 
@@ -2359,6 +2359,7 @@ do
 
 				local InputBegan
 				InputBegan = UserInputService.InputBegan:Connect(function(Input)
+					if Input.UserInputType == Enum.UserInputType.Touch then return end
 					if Input.UserInputType == Enum.UserInputType.Keyboard then
 						Keybind:Set(Input.KeyCode)
 					else
@@ -2539,6 +2540,7 @@ do
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
+				Items["Watermark"]:MakeDraggable()
 			end
 
 			Watermark.BaseText = Name
@@ -3331,7 +3333,7 @@ do
 					AnchorPoint = Vector2New(0.5, 0.5),
 					Position = UDim2New(0.5, 0, 0.5, 0),
 					BorderColor3 = FromRGB(0, 34, 37),
-					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 375, 0, 400),
+					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
 					BackgroundColor3 = FromRGB(17, 21, 27),
 				})
@@ -3552,7 +3554,17 @@ do
 
 			Window:SetCenter()
 			task.wait()
-			Window:SetOpen(true)
+			
+			local bootHidden = false
+			if Library.Folders and Library.Folders.Directory then
+				bootHidden = isfile(Library.Folders.Directory.."/silentload.txt")
+			end
+			Window:SetOpen(not bootHidden)
+			
+			if Data.MobileButtonText then
+				Library.HideShowButtonText = Data.MobileButtonText
+			end
+
 			return setmetatable(Window, Library)
 		end
 
@@ -5296,10 +5308,124 @@ do
 				SettingsSection:Toggle({
 					Name = "Keybind List",
 					Flag = "Keybind list",
-					Default = true,
+					Default = false,
 					Callback = function(Value)
 						KeybindList:SetVisibility(Value)
 					end,
+				})
+
+				SettingsSection:Toggle({
+					Name = "Silent Load",
+					Flag = "SilentLoad",
+					Default = (Library.Folders and Library.Folders.Directory and isfile(Library.Folders.Directory.."/silentload.txt")) or false,
+					Callback = function(Value)
+						if Library.Folders and Library.Folders.Directory then
+							if Value then
+								writefile(Library.Folders.Directory.."/silentload.txt", "true")
+							else
+								if isfile(Library.Folders.Directory.."/silentload.txt") then
+									delfile(Library.Folders.Directory.."/silentload.txt")
+								end
+							end
+						end
+					end
+				})
+				
+				SettingsSection:Toggle({
+					Name = "Mobile Hide/Show Button",
+					Flag = "MobileHideShow",
+					Default = IsMobile,
+					Callback = function(Value)
+						if Value then
+							if not Library.HideShowButton then
+								Library.HideShowButton = Instances:Create("TextButton", {
+									Parent = Library.Holder.Instance,
+									Name = "HideShow",
+									AnchorPoint = Vector2New(1, 0),
+									Position = UDim2New(1, -15, 0, 15),
+									Size = UDim2New(0, 45, 0, 45),
+									Text = Library.HideShowButtonText or "JX",
+									BackgroundColor3 = FromRGB(17, 21, 27),
+									TextColor3 = FromRGB(255, 255, 255),
+									BorderSizePixel = 2,
+									BorderColor3 = FromRGB(94, 213, 213),
+									ZIndex = 9999,
+								})
+								Instances:Create("UICorner", {
+									Parent = Library.HideShowButton.Instance,
+									Name = "\0",
+									CornerRadius = UDimNew(1, 0)
+								})
+								Library.HideShowButton:AddToTheme({ BackgroundColor3 = "Background 1", BorderColor3 = "Accent", TextColor3 = "Text" })
+								
+								Library.HideShowButton:Connect("MouseButton1Click", function()
+									if Window.IsOpen ~= nil then
+										Window:SetOpen(not Window.IsOpen)
+									end
+								end)
+								local DragStart = nil
+								local StartPos = nil
+								Library.HideShowButton:Connect("InputBegan", function(Input)
+									if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+										DragStart = Input.Position
+										StartPos = Library.HideShowButton.Instance.Position
+									end
+								end)
+								Library.HideShowButton:Connect("InputChanged", function(Input)
+									if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) and DragStart then
+										local Delta = Input.Position - DragStart
+										Library.HideShowButton.Instance.Position = UDim2New(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+									end
+								end)
+								Library.HideShowButton:Connect("InputEnded", function(Input)
+									if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+										DragStart = nil
+									end
+								end)
+							end
+							Library.HideShowButton.Instance.Visible = true
+						else
+							if Library.HideShowButton then
+								Library.HideShowButton.Instance.Visible = false
+							end
+						end
+					end
+				})
+
+				SettingsSection:Toggle({
+					Name = "UI Expand",
+					Flag = "UI Expand",
+					Default = IsMobile,
+					Callback = function(Value)
+					end
+				})
+
+				SettingsSection:Dropdown({
+					Name = "Notification Position",
+					Flag = "NotifPos",
+					Default = "Center Bottom",
+					Items = {"Center Top", "Center Bottom", "Left", "Right"},
+					Callback = function(Value)
+						if not Library.NotifHolder.Instance then return end
+						local layout = Library.NotifHolder.Instance:FindFirstChildOfClass("UIListLayout")
+						if Value == "Center Top" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
+						elseif Value == "Center Bottom" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 1)
+							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 1, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
+						elseif Value == "Left" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(0, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Left end
+						elseif Value == "Right" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(1, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(1, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Right end
+						end
+					end
 				})
 
 				SettingsSection:Label("Menu Keybind"):Keybind({
@@ -5310,44 +5436,6 @@ do
 					Callback = function()
 						Library.MenuKeybind = Library.Flags["MenuKeybind"].Key
 					end,
-				})
-
-				SettingsSection:Slider({
-					Name = "Menu Scale",
-					Flag = "MenuScale",
-					Min = 0.3,
-					Default = IsMobile and 0.65 or 1,
-					Max = 2,
-					Decimals = 2,
-					Callback = function(Value)
-						if Library.MainFrame and Library.MainFrame:FindFirstChild("UIScale") then
-							Library.MainFrame.UIScale.Scale = Value
-						end
-					end
-				})
-
-				SettingsSection:Dropdown({
-					Name = "Notification Position",
-					Flag = "NotifPos",
-					Default = "Center",
-					Items = {"Left", "Center", "Right"},
-					Callback = function(Value)
-						if not Library.NotifHolder.Instance then return end
-						local layout = Library.NotifHolder.Instance:FindFirstChildOfClass("UIListLayout")
-						if Value == "Left" then
-							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0, 0)
-							Library.NotifHolder.Instance.Position = UDim2New(0, 0, 0, 0)
-							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Left end
-						elseif Value == "Center" then
-							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 0)
-							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 0, 0)
-							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
-						elseif Value == "Right" then
-							Library.NotifHolder.Instance.AnchorPoint = Vector2New(1, 0)
-							Library.NotifHolder.Instance.Position = UDim2New(1, 0, 0, 0)
-							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Right end
-						end
-					end
 				})
 			end
 
