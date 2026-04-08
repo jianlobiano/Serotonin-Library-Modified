@@ -554,7 +554,7 @@ do
 			}
 
 			local BeginResizing = function(Side)
-				if Library.Flags["UI Expand"] then return end
+				if not Library.Flags["UI Expand"] then return end
 				Resizing = true
 				CurrentSide = Side
 
@@ -3335,7 +3335,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 20) or UDim2New(0.5, 0, 0.5, 0),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 50) or UDim2New(0.5, 0, 0.5, 0),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
@@ -3564,7 +3564,13 @@ do
 			if Library.Folders and Library.Folders.Directory then
 				bootHidden = isfile(Library.Folders.Directory.."/silentload.txt")
 			end
-			Window:SetOpen(not bootHidden)
+			if bootHidden then
+				Library.FadeSpeed = 0
+				Window:SetOpen(false)
+				Library.FadeSpeed = 0.2
+			else
+				Window:SetOpen(true)
+			end
 			
 			if Data.MobileButtonText then
 				Library.HideShowButtonText = Data.MobileButtonText
