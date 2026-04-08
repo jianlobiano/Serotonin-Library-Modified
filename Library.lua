@@ -692,13 +692,6 @@ do
 				return Font.new(getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".json"))
 			end
 		end
-
-		CustomFont:New("Verdana", 400, "Regular", {
-			Id = "Verdana",
-			Url = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/verdana.ttf",
-		})
-
-		Library.Font = CustomFont:Get("Verdana")
 	end
 
 	Library.Holder = Instances:Create("ScreenGui", {
@@ -3319,6 +3312,14 @@ do
 		Library.Window = function(self, Data)
 			Data = Data or {}
 
+			if not Library.Font then
+				CustomFont:New("Verdana", 400, "Regular", {
+					Id = "Verdana",
+					Url = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/verdana.ttf",
+				})
+				Library.Font = CustomFont:Get("Verdana")
+			end
+
 			local Window = {
 				Name = Data.Name or Data.name or "Bronx Dupe",
 				Logo = Data.Logo or Data.logo or "121644323941494",
@@ -3334,10 +3335,11 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = UDim2New(0.5, 0, 0.5, 0),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 20) or UDim2New(0.5, 0, 0.5, 0),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
+					Visible = false,
 					BackgroundColor3 = FromRGB(17, 21, 27),
 				})
 				Items["MainFrame"]:AddToTheme({ BackgroundColor3 = "Background 1" })
@@ -5414,11 +5416,17 @@ do
 						if Value == "Center Top" then
 							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 0)
 							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 0, 0)
-							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
+							if layout then
+								layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+								layout.VerticalAlignment = Enum.VerticalAlignment.Top
+							end
 						elseif Value == "Center Bottom" then
 							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 1)
 							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 1, 0)
-							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
+							if layout then
+								layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+								layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+							end
 						elseif Value == "Left" then
 							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0, 0)
 							Library.NotifHolder.Instance.Position = UDim2New(0, 0, 0, 0)
