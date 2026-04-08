@@ -71,7 +71,7 @@ do
 	Library = {
 		Theme = {},
 
-		MenuKeybind = tostring(Enum.KeyCode.RightControl),
+		MenuKeybind = tostring(Enum.KeyCode.RightAlt),
 
 		Flags = {},
 
@@ -2541,11 +2541,33 @@ do
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
 			end
 
+			Watermark.BaseText = Name
+
 			function Watermark:SetText(Text)
-				Text = tostring(Text)
-				Items["Text"].Instance.Text = Text
-				Items["Watermark"]:Tween(nil, { Size = UDim2New(0, Items["Text"].Instance.TextBounds.X + 20, 0, 30) })
+				Watermark.BaseText = tostring(Text)
 			end
+
+			local Frames = 0
+			local LastUpdate = tick()
+			local CurrentFps = 60
+
+			Library:Connect(RunService.RenderStepped, function()
+				Frames = Frames + 1
+				local Now = tick()
+				if Now - LastUpdate >= 1 then
+					CurrentFps = math.floor(Frames / (Now - LastUpdate))
+					Frames = 0
+					LastUpdate = Now
+				end
+				
+				local Ping = 0
+				pcall(function()
+					Ping = math.floor(LocalPlayer:GetNetworkPing() * 1000)
+				end)
+				
+				Items["Text"].Instance.Text = string.format("%s | %d FPS | %d ms", Watermark.BaseText, CurrentFps, Ping)
+				Items["Watermark"]:Tween(nil, { Size = UDim2New(0, Items["Text"].Instance.TextBounds.X + 20, 0, 30) })
+			end)
 
 			function Watermark:SetVisibility(Bool)
 				Items["Watermark"].Instance.Visible = Bool
@@ -3314,6 +3336,12 @@ do
 					BackgroundColor3 = FromRGB(17, 21, 27),
 				})
 				Items["MainFrame"]:AddToTheme({ BackgroundColor3 = "Background 1" })
+
+				Items["UIScale"] = Instances:Create("UIScale", {
+					Parent = Items["MainFrame"].Instance,
+					Name = "\0",
+					Scale = IsMobile and 0.65 or 1,
+				})
 
 				Library.MainFrame = Items["MainFrame"].Instance
 
@@ -5283,6 +5311,44 @@ do
 						Library.MenuKeybind = Library.Flags["MenuKeybind"].Key
 					end,
 				})
+
+				SettingsSection:Slider({
+					Name = "Menu Scale",
+					Flag = "MenuScale",
+					Min = 0.3,
+					Default = IsMobile and 0.65 or 1,
+					Max = 2,
+					Decimals = 2,
+					Callback = function(Value)
+						if Library.MainFrame and Library.MainFrame:FindFirstChild("UIScale") then
+							Library.MainFrame.UIScale.Scale = Value
+						end
+					end
+				})
+
+				SettingsSection:Dropdown({
+					Name = "Notification Position",
+					Flag = "NotifPos",
+					Default = "Center",
+					Items = {"Left", "Center", "Right"},
+					Callback = function(Value)
+						if not Library.NotifHolder.Instance then return end
+						local layout = Library.NotifHolder.Instance:FindFirstChildOfClass("UIListLayout")
+						if Value == "Left" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(0, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Left end
+						elseif Value == "Center" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(0.5, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(0.5, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Center end
+						elseif Value == "Right" then
+							Library.NotifHolder.Instance.AnchorPoint = Vector2New(1, 0)
+							Library.NotifHolder.Instance.Position = UDim2New(1, 0, 0, 0)
+							if layout then layout.HorizontalAlignment = Enum.HorizontalAlignment.Right end
+						end
+					end
+				})
 			end
 
 			local ConfigsSection = SettingsPage:Section({ Name = "Configs", Side = 2 })
@@ -5291,8 +5357,8 @@ do
 				local ConfigSelected
 
 				local ConfigsSearchbox = ConfigsSection:Dropdown({
-					Name = "Profiles list",
-					Flag = "Profiles list",
+					Name = "Configs List",
+					Flag = "Configs List",
 					Multi = false,
 					Items = {},
 					Callback = function(Value)
@@ -5313,12 +5379,14 @@ do
 				ConfigsSection:Button({
 					Name = "Create",
 					Callback = function()
-						if ConfigName ~= "" then
+						if ConfigName ~= nil and ConfigName ~= "" then
 							if not isfile(Library.Folders.Configs .. "/" .. ConfigName .. ".json") then
 								writefile(Library.Folders.Configs .. "/" .. ConfigName .. ".json", Library:GetConfig())
 								Library:RefreshConfigsList(ConfigsSearchbox)
 								Library:Notification("Created config " .. ConfigName .. ".json", 5)
 							end
+						else
+							Library:Notification("Please enter a name for the config", 3, FromRGB(255, 0, 0))
 						end
 					end,
 				})
@@ -5330,6 +5398,8 @@ do
 							delfile(Library.Folders.Configs .. "/" .. ConfigSelected .. ".json")
 							Library:RefreshConfigsList(ConfigsSearchbox)
 							Library:Notification("Deleted config " .. ConfigSelected .. ".json", 5, FromRGB(255, 0, 0))
+						else
+							Library:Notification("Please select a config to delete", 3, FromRGB(255, 0, 0))
 						end
 					end,
 				})
@@ -5344,7 +5414,7 @@ do
 							if Success then
 								Library:Notification("Loaded config " .. ConfigSelected .. ".json", 5)
 							else
-								Library:Notification("Failed to load config " .. ConfigSelected .. ".json", 5)
+								Library:Notification("Failed to load config " .. ConfigSelected .. ".json", 5, FromRGB(255, 0, 0))
 							end
 						end
 					end,
@@ -5364,7 +5434,47 @@ do
 					Name = "Refresh",
 					Callback = function()
 						Library:RefreshConfigsList(ConfigsSearchbox)
+						Library:Notification("Refreshed configs list", 3)
 					end,
+				})
+
+				local AutoLoadLabel = ConfigsSection:Label("Auto Load: None")
+				
+				local AutoLoadPath = Library.Folders.Directory .. "/autoload.txt"
+				if isfile(AutoLoadPath) then
+					local TargetCfg = readfile(AutoLoadPath)
+					AutoLoadLabel:SetText("Auto Load: " .. TargetCfg)
+					task.spawn(function()
+						task.wait(1)
+						if isfile(Library.Folders.Configs .. "/" .. TargetCfg .. ".json") then
+							Library:LoadConfig(readfile(Library.Folders.Configs .. "/" .. TargetCfg .. ".json"))
+							Library:Notification("Auto-loaded config: " .. TargetCfg, 5)
+						end
+					end)
+				end
+
+				ConfigsSection:Button({
+					Name = "Set Auto Load",
+					Callback = function()
+						if ConfigSelected ~= nil then
+							writefile(AutoLoadPath, ConfigSelected)
+							AutoLoadLabel:SetText("Auto Load: " .. ConfigSelected)
+							Library:Notification("Set Auto Load to " .. ConfigSelected, 3)
+						else
+							Library:Notification("Please select a config first!", 3, FromRGB(255, 0, 0))
+						end
+					end
+				})
+
+				ConfigsSection:Button({
+					Name = "Reset Auto Load",
+					Callback = function()
+						if isfile(AutoLoadPath) then
+							delfile(AutoLoadPath)
+						end
+						AutoLoadLabel:SetText("Auto Load: None")
+						Library:Notification("Reset Auto Load", 3)
+					end
 				})
 
 				Library:RefreshConfigsList(ConfigsSearchbox)
