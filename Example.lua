@@ -1,10 +1,9 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/sametexe001/sametlibs/refs/heads/main/Serotonin/Library.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/jianlobiano/Serotonin-Library-Modified/refs/heads/main/Library.lua"))()
 
 local Window = Library:Window({Name = "Window", Logo = "90363697817722"})
 local Watermark = Library:Watermark("This is a watermark")
 local KeybindList = Library:KeybindList()
 
-local ArmorViewer = Library:ArmorViewer()
 local TargetHud = Library:TargetHud()
 
 TargetHud:SetPlayer(game.Players.LocalPlayer)
@@ -63,6 +62,18 @@ local Dropdown = AimbotSection:Dropdown({
     MaxSize = 100,
     Callback = function(Value)
         print(Value)
+    end
+})
+
+local MultiDropdown = AimbotSection:Dropdown({
+    Name = "Multi Dropdown",
+    Flag = "MultiDropdown",
+    Default = {"Option 1", "Option 2"},
+    Items = {"Option 1", "Option 2", "Option 3"},
+    Multi = true,
+    MaxSize = 100,
+    Callback = function(Value)
+        print("Selected:", table.concat(Value, ", "))
     end
 })
 
