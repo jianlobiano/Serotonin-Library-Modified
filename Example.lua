@@ -1,6 +1,18 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/jianlobiano/Serotonin-Library-Modified/refs/heads/main/Library.lua"))()
 
-local Window = Library:Window({Name = "Window", Logo = "90363697817722"})
+Library.Folders = {
+    Directory = "uip100",
+    Configs = "uip100/Configs",
+    Assets = "uip100/Assets"
+}
+
+for Index, Value in pairs(Library.Folders) do
+    if not isfolder(Value) then
+        makefolder(Value)
+    end
+end
+
+local Window = Library:Window({Name = "Window", Logo = "90363697817722", MobileButtonText = "JX"})
 local Watermark = Library:Watermark("This is a watermark")
 local KeybindList = Library:KeybindList()
 
