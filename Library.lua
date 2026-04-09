@@ -1444,14 +1444,19 @@ do
 					Items["ColorpickerWindow"].Instance.Parent = Library.Holder.Instance
 
 					RenderStepped = RunService.RenderStepped:Connect(function()
-						Items["ColorpickerWindow"].Instance.Position = UDim2New(
-							0,
-							Items["ColorpickerButton"].Instance.AbsolutePosition.X,
-							0,
-							Items["ColorpickerButton"].Instance.AbsolutePosition.Y
-								+ Items["ColorpickerButton"].Instance.AbsoluteSize.Y
-								+ 65
-						)
+						if IsMobile then
+							Items["ColorpickerWindow"].Instance.Position = UDim2New(0.5, 0, 0.5, 0)
+							Items["ColorpickerWindow"].Instance.AnchorPoint = Vector2New(0.5, 0.5)
+						else
+							Items["ColorpickerWindow"].Instance.Position = UDim2New(
+								0,
+								Items["ColorpickerButton"].Instance.AbsolutePosition.X,
+								0,
+								Items["ColorpickerButton"].Instance.AbsolutePosition.Y
+									+ Items["ColorpickerButton"].Instance.AbsoluteSize.Y
+									+ 65
+							)
+						end
 					end)
 
 					for Index, Value in Library.OpenFrames do
@@ -1515,15 +1520,20 @@ do
 					Items["ColorpickerWindow2"].Instance.Parent = Library.Holder.Instance
 
 					RenderStepped2 = RunService.RenderStepped:Connect(function()
-						Items["ColorpickerWindow2"].Instance.Position = UDim2New(
-							0,
-							Items["ColorpickerButton"].Instance.AbsolutePosition.X
-								+ Items["ColorpickerButton"].Instance.AbsoluteSize.X,
-							0,
-							Items["ColorpickerButton"].Instance.AbsolutePosition.Y
-								+ Items["ColorpickerButton"].Instance.AbsoluteSize.Y
-								+ 65
-						)
+						if IsMobile then
+							Items["ColorpickerWindow2"].Instance.Position = UDim2New(0.5, 0, 0.5, 0)
+							Items["ColorpickerWindow2"].Instance.AnchorPoint = Vector2New(0.5, 0.5)
+						else
+							Items["ColorpickerWindow2"].Instance.Position = UDim2New(
+								0,
+								Items["ColorpickerButton"].Instance.AbsolutePosition.X
+									+ Items["ColorpickerButton"].Instance.AbsoluteSize.X,
+								0,
+								Items["ColorpickerButton"].Instance.AbsolutePosition.Y
+									+ Items["ColorpickerButton"].Instance.AbsoluteSize.Y
+									+ 65
+							)
+						end
 					end)
 				else
 					if RenderStepped2 then
@@ -3404,7 +3414,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 150) or UDim2New(0.5, 0, 0.5, 10),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 75) or UDim2New(0.5, 0, 0.5, 10),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
