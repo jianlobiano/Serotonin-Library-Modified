@@ -2185,6 +2185,7 @@ do
 					}
 
 					Update()
+					Keybind.Picking = false
 					return
 				end
 
