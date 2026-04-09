@@ -398,6 +398,10 @@ do
 				end
 			end
 
+			if not Library then
+				return
+			end
+
 			return Library:Connect(self.Instance[Event], Callback, Name)
 		end
 
@@ -406,11 +410,19 @@ do
 				return
 			end
 
+			if not Library then
+				return
+			end
+
 			return Tween:Create(self, Info, Goal)
 		end
 
 		Instances.Disconnect = function(self, Name)
 			if not self.Instance then
+				return
+			end
+
+			if not Library then
 				return
 			end
 
