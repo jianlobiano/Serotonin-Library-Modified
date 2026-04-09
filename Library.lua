@@ -2175,7 +2175,7 @@ do
 				if StringFind(tostring(Key), "Enum") then
 					Keybind.Key = tostring(Key)
 
-					Key = Key.Name == "Escape" and "None" or Key.Name
+					Key = Key.Name == "Backspace" and "None" or Key.Name
 
 					local KeyString = Keys[Keybind.Key] or StringGSub(Key, "Enum.", "") or "None"
 					local TextToDisplay = StringGSub(StringGSub(KeyString, "KeyCode.", ""), "UserInputType.", "")
@@ -2196,7 +2196,7 @@ do
 
 					Update()
 				elseif type(Key) == "table" then
-					local RealKey = Key.Key == "Escape" and "None" or Key.Key
+					local RealKey = Key.Key == "Backspace" and "None" or Key.Key
 					Keybind.Key = tostring(Key.Key)
 
 					if Key.Mode then
