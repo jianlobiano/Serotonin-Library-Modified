@@ -5286,7 +5286,7 @@ do
 					BtnItems["Button"]:Connect("MouseButton1Click", function()
 						Listbox.Value = Value
 						for _, b in ObjectItems do UpdateState(b, b.Name) end
-						Library:SafeCallback(Listbox.Callback, Listbox.Value)
+						Library:SafeCall(Listbox.Callback, Listbox.Value)
 						Library.Flags[Listbox.Flag] = Listbox.Value
 					end)
 
@@ -5316,7 +5316,7 @@ do
 			function Listbox:Set(Option)
 				Listbox.Value = Option
 				for _, b in ObjectItems do UpdateState(b, b.Name) end
-				Library:SafeCallback(Listbox.Callback, Listbox.Value)
+				Library:SafeCall(Listbox.Callback, Listbox.Value)
 				Library.Flags[Listbox.Flag] = Listbox.Value
 			end
 
