@@ -5508,7 +5508,7 @@ do
 				SettingsSection:Dropdown({
 					Name = "Notification Position",
 					Flag = "NotifPos",
-					Default = "Center Bottom",
+					Default = "Left",
 					Items = {"Center Top", "Center Bottom", "Left", "Right"},
 					Callback = function(Value)
 						if not Library.NotifHolder.Instance then return end
