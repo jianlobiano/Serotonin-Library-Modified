@@ -2173,7 +2173,7 @@ do
 				if StringFind(tostring(Key), "Enum") then
 					Keybind.Key = tostring(Key)
 
-					Key = Key.Name == "Backspace" and "None" or Key.Name
+					Key = Key.Name == "Escape" and "None" or Key.Name
 
 					local KeyString = Keys[Keybind.Key] or StringGSub(Key, "Enum.", "") or "None"
 					local TextToDisplay = StringGSub(StringGSub(KeyString, "KeyCode.", ""), "UserInputType.", "")
@@ -2194,7 +2194,7 @@ do
 
 					Update()
 				elseif type(Key) == "table" then
-					local RealKey = Key.Key == "Backspace" and "None" or Key.Key
+					local RealKey = Key.Key == "Escape" and "None" or Key.Key
 					Keybind.Key = tostring(Key.Key)
 
 					if Key.Mode then
@@ -2574,6 +2574,7 @@ do
 					Position = UDim2New(0, 20, 0.5, 0),
 					BorderColor3 = FromRGB(0, 0, 0),
 					BorderSizePixel = 0,
+					Visible = false,
 					AutomaticSize = Enum.AutomaticSize.XY,
 					BackgroundColor3 = FromRGB(24, 28, 36),
 				})
@@ -3320,7 +3321,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 60) or UDim2New(0.5, 0, 0.5, 10),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 150) or UDim2New(0.5, 0, 0.5, 10),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
@@ -4150,7 +4151,12 @@ do
 					Section = Keybind.Section,
 					Default = Keybind.Default,
 					Mode = Keybind.Mode,
-					Callback = Keybind.Callback,
+					Callback = function(State)
+						Toggle:Set(State)
+						if Keybind.Callback then
+							Keybind.Callback(State)
+						end
+					end,
 				})
 
 				return NewKeybind
