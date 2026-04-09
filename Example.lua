@@ -46,6 +46,21 @@ local Toggle = AimbotSection:Toggle({
     end
 })
 
+local ToggleWithKeybind = AimbotSection:Toggle({
+    Name = "Toggle with Keybind",
+    Flag = "AimbotToggleKeybind",
+    Default = false,
+    Callback = function(Value)
+        print("Toggle with keybind is now:", Value)
+    end
+}):Keybind({
+    Default = Enum.KeyCode.Backspace,
+    Mode = "Toggle",
+    Callback = function(Value)
+        print("Keybind is now:", Value)
+    end
+})
+
 local Button = AimbotSection:Button({
     Name = "Button",
     Callback = function()
