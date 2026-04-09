@@ -5223,9 +5223,9 @@ do
 				Name = "\0",
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			})
-			Items["UIListLayout"]:Connect("GetPropertyChangedSignal", function()
+			Library:Connect(Items["UIListLayout"].Instance:GetPropertyChangedSignal("AbsoluteContentSize"), function()
 				Items["ScrollingFrame"].Instance.CanvasSize = UDim2New(0, 0, 0, Items["UIListLayout"].Instance.AbsoluteContentSize.Y)
-			end, "AbsoluteContentSize")
+			end)
 
 			local function UpdateState(Btn, Name)
 				if Listbox.Value == Name then
