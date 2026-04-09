@@ -135,3 +135,14 @@ AimbotSection:Textbox({
 })
 
 Library:Notification("this is a notification", 5)
+
+MiscSection:Listbox({
+    Name = "Example Listbox",
+    Flag = "ExampleListbox",
+    Items = {"Apple", "Banana", "Orange", "Grape", "Strawberry"},
+    Default = "Apple",
+    MaxSize = 150,
+    Callback = function(Value)
+        print("Selected Listbox Item:", Value)
+    end
+})
