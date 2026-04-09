@@ -438,10 +438,32 @@ do
 
 			local Set = function(Input)
 				local DragDelta = Input.Position - DragStart
-				
+
+				local newOffsetX = StartPosition.X.Offset + DragDelta.X
+				local newOffsetY = StartPosition.Y.Offset + DragDelta.Y
+
+				local screenSize = workspace.CurrentCamera.ViewportSize
+				local guiSize = Gui.AbsoluteSize
+				local anchor = Gui.AnchorPoint
+
+				local absoluteCenterX = (screenSize.X * StartPosition.X.Scale) + newOffsetX
+				local absoluteCenterY = (screenSize.Y * StartPosition.Y.Scale) + newOffsetY
+
+				local minX = guiSize.X * anchor.X
+				local maxX = screenSize.X - (guiSize.X * (1 - anchor.X))
+
+				local minY = guiSize.Y * anchor.Y
+				local maxY = screenSize.Y - (guiSize.Y * (1 - anchor.Y))
+
+				absoluteCenterX = math.clamp(absoluteCenterX, minX, maxX)
+				absoluteCenterY = math.clamp(absoluteCenterY, minY, maxY)
+
+				newOffsetX = absoluteCenterX - (screenSize.X * StartPosition.X.Scale)
+				newOffsetY = absoluteCenterY - (screenSize.Y * StartPosition.Y.Scale)
+
 				self:Tween(
 					TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-					{ Position = UDim2New(StartPosition.X.Scale, StartPosition.X.Offset + DragDelta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + DragDelta.Y) }
+					{ Position = UDim2New(StartPosition.X.Scale, newOffsetX, StartPosition.Y.Scale, newOffsetY) }
 				)
 			end
 
@@ -1019,6 +1041,24 @@ do
 					}),
 				})
 
+				Items["ColorpickerWindow2"] = Instances:Create("Frame", {
+					Parent = Library.UnusedHolder.Instance,
+					Name = "\0",
+					Visible = false,
+					Position = UDim2New(0, 1032, 0, 123),
+					BorderColor3 = FromRGB(0, 34, 37),
+					Size = UDim2New(0, 232, 0, 265),
+					BorderSizePixel = 2,
+					BackgroundColor3 = FromRGB(17, 21, 27),
+				})
+
+				if IsMobile then
+					Instances:Create("UIScale", {
+						Parent = Items["ColorpickerWindow2"].Instance,
+						Scale = 0.65,
+					})
+				end
+
 				Items["ColorpickerWindow"] = Instances:Create("Frame", {
 					Parent = Library.UnusedHolder.Instance,
 					Name = "\0",
@@ -1029,6 +1069,13 @@ do
 					BorderSizePixel = 2,
 					BackgroundColor3 = FromRGB(17, 21, 27),
 				})
+
+				if IsMobile then
+					Instances:Create("UIScale", {
+						Parent = Items["ColorpickerWindow"].Instance,
+						Scale = 0.65,
+					})
+				end
 
 				Items["Glow"] = Instances:Create("ImageLabel", {
 					Parent = Items["ColorpickerWindow"].Instance,
@@ -3357,7 +3404,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 100) or UDim2New(0.5, 0, 0.5, 10),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 150) or UDim2New(0.5, 0, 0.5, 10),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
@@ -4194,6 +4241,15 @@ do
 						end
 					end,
 				})
+
+				local OldToggleSet = Toggle.Set
+				Toggle.Set = function(self, Value)
+					OldToggleSet(self, Value)
+					NewKeybind.Toggled = Value
+					if Library.Flags[NewKeybind.Flag] then
+						Library.Flags[NewKeybind.Flag].Toggled = Value
+					end
+				end
 
 				return NewKeybind
 			end
