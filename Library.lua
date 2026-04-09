@@ -2178,6 +2178,14 @@ do
 					Keybind.Value = "None"
 					Items["KeyButton"].Instance.Text = "None"
 
+					-- Set mode from table or keep existing, default to Toggle
+					local IncomingMode = (type(Key) == "table" and Key.Mode) or Keybind.Mode
+					if IncomingMode == nil or IncomingMode == "" then
+						IncomingMode = Data.Mode or "Toggle"
+					end
+					Keybind.Mode = IncomingMode
+					Keybind:SetMode(IncomingMode)
+
 					Library.Flags[Keybind.Flag] = {
 						Mode = Keybind.Mode,
 						Key = Keybind.Key,
@@ -2193,7 +2201,13 @@ do
 					Keybind.Key = tostring(Key)
 					Keybind.Picking = false
 
-					Key = Key.Name == "Backspace" and "None" or Key.Name
+					-- Ensure mode is set; default to Toggle if empty
+					if Keybind.Mode == nil or Keybind.Mode == "" then
+						Keybind.Mode = Data.Mode or "Toggle"
+						Keybind:SetMode(Keybind.Mode)
+					end
+
+					Key = Key.Name
 
 					local KeyString = Keys[Keybind.Key] or StringGSub(Key, "Enum.", "") or "None"
 					local TextToDisplay = StringGSub(StringGSub(KeyString, "KeyCode.", ""), "UserInputType.", "")
@@ -3343,7 +3357,7 @@ do
 					Parent = Library.Holder.Instance,
 					Name = "\0",
 					AnchorPoint = Vector2New(0.5, 0.5),
-					Position = IsMobile and UDim2New(0.5, 0, 0.5, 50) or UDim2New(0.5, 0, 0.5, 10),
+					Position = IsMobile and UDim2New(0.5, 0, 0.5, 100) or UDim2New(0.5, 0, 0.5, 10),
 					BorderColor3 = FromRGB(0, 34, 37),
 					Size = not IsMobile and UDim2New(0, 621, 0, 542) or UDim2New(0, 450, 0, 480),
 					BorderSizePixel = 2,
