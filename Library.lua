@@ -436,25 +436,10 @@ do
 
 			local Set = function(Input)
 				local DragDelta = Input.Position - DragStart
-				local targetAbsPos = StartPosition + Vector2New(DragDelta.X, DragDelta.Y)
-
-				local ScreenSize = Gui.Parent.AbsoluteSize
-				local GuiSize = Gui.AbsoluteSize
-
-				local minX = 0
-				local minY = -36 -- usually default roblox coregui inset ignore
-				local maxX = ScreenSize.X - GuiSize.X
-				local maxY = ScreenSize.Y - GuiSize.Y
-
-				local boundX = MathClamp(targetAbsPos.X, minX, maxX)
-				local boundY = MathClamp(targetAbsPos.Y, minY, maxY)
-
-				local offsetX = boundX + (Gui.AnchorPoint.X * GuiSize.X)
-				local offsetY = boundY + (Gui.AnchorPoint.Y * GuiSize.Y)
-
+				
 				self:Tween(
 					TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-					{ Position = UDim2New(0, offsetX, 0, offsetY) }
+					{ Position = UDim2New(StartPosition.X.Scale, StartPosition.X.Offset + DragDelta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + DragDelta.Y) }
 				)
 			end
 
@@ -467,7 +452,7 @@ do
 				then
 					Dragging = true
 					DragStart = Input.Position
-					StartPosition = Gui.AbsolutePosition
+					StartPosition = Gui.Position
 
 					if InputChanged then
 						return
@@ -5406,7 +5391,7 @@ do
 				SettingsSection:Toggle({
 					Name = "UI Expand",
 					Flag = "UI Expand",
-					Default = IsMobile,
+					Default = not IsMobile,
 					Callback = function(Value)
 					end
 				})
