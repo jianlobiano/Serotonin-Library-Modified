@@ -1455,7 +1455,7 @@ do
 					Items["ColorpickerWindow"].Instance.Visible = true
 					Items["ColorpickerWindow"].Instance.Parent = Library.Holder.Instance
 
-					RenderStepped = RunService.RenderStepped:Connect(function()
+					RenderStepped = Library:Connect(RunService.RenderStepped, function()
 						if IsMobile then
 							Items["ColorpickerWindow"].Instance.Position = UDim2New(0.5, 0, 0.5, 0)
 							Items["ColorpickerWindow"].Instance.AnchorPoint = Vector2New(0.5, 0.5)
@@ -1531,7 +1531,7 @@ do
 					Items["ColorpickerWindow2"].Instance.Visible = true
 					Items["ColorpickerWindow2"].Instance.Parent = Library.Holder.Instance
 
-					RenderStepped2 = RunService.RenderStepped:Connect(function()
+					RenderStepped2 = Library:Connect(RunService.RenderStepped, function()
 						if IsMobile then
 							Items["ColorpickerWindow2"].Instance.Position = UDim2New(0.5, 0, 0.5, 0)
 							Items["ColorpickerWindow2"].Instance.AnchorPoint = Vector2New(0.5, 0.5)
@@ -2181,7 +2181,7 @@ do
 					Items["KeybindWindow"].Instance.Visible = true
 					Items["KeybindWindow"].Instance.Parent = Library.Holder.Instance
 
-					RenderStepped = RunService.RenderStepped:Connect(function()
+					RenderStepped = Library:Connect(RunService.RenderStepped, function()
 						Items["KeybindWindow"].Instance.Position = UDim2New(
 							0,
 							Items["KeyButton"].Instance.AbsolutePosition.X,
@@ -4849,7 +4849,7 @@ do
 					Items["OptionHolder"].Instance.Visible = true
 					Items["OptionHolder"].Instance.Parent = Library.Holder.Instance
 
-					RenderStepped = RunService.RenderStepped:Connect(function()
+					RenderStepped = Library:Connect(RunService.RenderStepped, function()
 						Items["OptionHolder"].Instance.Position = UDim2New(
 							0,
 							Items["RealDropdown"].Instance.AbsolutePosition.X,
@@ -5106,7 +5106,7 @@ do
 			local SearchStepped
 
 			Items["Search"]:Connect("Focused", function()
-				SearchStepped = RunService.RenderStepped:Connect(function()
+				SearchStepped = Library:Connect(RunService.RenderStepped, function()
 					for Index, Value in Dropdown.Options do
 						if Items["Search"].Instance.Text ~= "" then
 							if
