@@ -366,6 +366,7 @@ do
 				return
 			end
 
+			if not Library then return end
 			Library:AddToTheme(self, Properties)
 		end
 
@@ -374,6 +375,7 @@ do
 				return
 			end
 
+			if not Library then return end
 			Library:ChangeItemTheme(self, Properties)
 		end
 
@@ -4239,6 +4241,7 @@ do
 				Items["Button"]:Tween(nil, { BackgroundColor3 = Library.Theme.Accent })
 				Library:SafeCall(Button.Callback)
 				task.wait(0.1)
+				if not Library then return end
 				Items["Button"]:ChangeItemTheme({ BackgroundColor3 = "Element" })
 				Items["Button"]:Tween(nil, { BackgroundColor3 = Library.Theme.Element })
 			end
