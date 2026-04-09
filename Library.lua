@@ -1196,6 +1196,7 @@ do
 					Size = UDim2New(0, 10, 1, -59),
 					ZIndex = 2,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 
@@ -1211,6 +1212,7 @@ do
 					Size = UDim2New(1, 0, 1, 0),
 					ZIndex = 2,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 
@@ -1484,7 +1486,7 @@ do
 					end
 
 					if RenderStepped then
-						RenderStepped:Disconnect()
+						Library:Disconnect(RenderStepped.Name)
 						RenderStepped = nil
 					end
 				end
@@ -1549,7 +1551,7 @@ do
 					end)
 				else
 					if RenderStepped2 then
-						RenderStepped2:Disconnect()
+						Library:Disconnect(RenderStepped2.Name)
 						RenderStepped2 = nil
 					end
 
@@ -1984,6 +1986,7 @@ do
 					BorderSizePixel = 0,
 					ZIndex = 5,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["ToggleText"]:AddToTheme({ TextColor3 = "Text" })
@@ -2054,6 +2057,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					ZIndex = 5,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["HoldText"]:AddToTheme({ TextColor3 = "Text" })
@@ -2123,6 +2127,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					ZIndex = 5,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["AlwaysOnText"]:AddToTheme({ TextColor3 = "Text" })
@@ -2209,7 +2214,7 @@ do
 					end
 
 					if RenderStepped then
-						RenderStepped:Disconnect()
+						Library:Disconnect(RenderStepped.Name)
 						RenderStepped = nil
 					end
 				end
@@ -2632,6 +2637,7 @@ do
 					ZIndex = 5,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -2752,6 +2758,7 @@ do
 					Size = UDim2New(0, 75, 0, 15),
 					BorderSizePixel = 0,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Title"]:AddToTheme({ TextColor3 = "Text" })
@@ -2812,6 +2819,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				NewKey:AddToTheme({ TextColor3 = "Text" })
@@ -2909,6 +2917,7 @@ do
 					ZIndex = 8,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Title"]:AddToTheme({ TextColor3 = "Text" })
@@ -3074,6 +3083,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.XY,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -3171,6 +3181,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Title"]:AddToTheme({ TextColor3 = "Text" })
@@ -3259,6 +3270,7 @@ do
 					Position = UDim2New(0, 77, 0, 0),
 					BorderSizePixel = 0,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Username"]:AddToTheme({ TextColor3 = "Text" })
@@ -3521,6 +3533,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Title"]:AddToTheme({ TextColor3 = "Text" })
@@ -3707,6 +3720,7 @@ do
 					Size = UDim2New(0, 0, 1, 0),
 					BorderSizePixel = 0,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 
@@ -3773,6 +3787,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					ZIndex = 5,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -4039,6 +4054,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -4098,6 +4114,7 @@ do
 					Size = UDim2New(1, 0, 0, 15),
 					BorderSizePixel = 0,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 
@@ -4149,6 +4166,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -4419,6 +4437,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -4617,6 +4636,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -4660,6 +4680,7 @@ do
 					Position = UDim2New(0, 4, 0.5, 0),
 					BorderSizePixel = 0,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Value"]:AddToTheme({ TextColor3 = "Text" })
@@ -4872,7 +4893,7 @@ do
 					Library.OpenFrames[Dropdown] = Dropdown
 				else
 					if RenderStepped then
-						RenderStepped:Disconnect()
+						Library:Disconnect(RenderStepped.Name)
 						RenderStepped = nil
 					end
 
@@ -4978,6 +4999,7 @@ do
 					BorderColor3 = FromRGB(0, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				OptionText:AddToTheme({ TextColor3 = "Text" })
@@ -5128,7 +5150,7 @@ do
 
 			Items["Search"]:Connect("FocusLost", function()
 				if SearchStepped then
-					SearchStepped:Disconnect()
+					Library:Disconnect(SearchStepped.Name)
 					SearchStepped = nil
 				end
 			end)
@@ -5368,6 +5390,7 @@ do
 					BorderSizePixel = 0,
 					ZIndex = 2,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -5537,6 +5560,7 @@ do
 					BorderSizePixel = 0,
 					AutomaticSize = Enum.AutomaticSize.X,
 					TextSize = 14,
+					RichText = true,
 					BackgroundColor3 = FromRGB(255, 255, 255),
 				})
 				Items["Text"]:AddToTheme({ TextColor3 = "Text" })
@@ -5908,3 +5932,4 @@ end
 
 getgenv().Library = Library
 return Library 
+
