@@ -2172,6 +2172,22 @@ do
 			end
 
 			function Keybind:Set(Key)
+				local KStr = tostring(type(Key) == "table" and Key.Key or Key)
+				if StringFind(KStr, "Backspace") or KStr == "None" then
+					Keybind.Key = "None"
+					Keybind.Value = "None"
+					Items["KeyButton"].Instance.Text = "None"
+
+					Library.Flags[Keybind.Flag] = {
+						Mode = Keybind.Mode,
+						Key = Keybind.Key,
+						Toggled = Keybind.Toggled,
+					}
+
+					Update()
+					return
+				end
+
 				if StringFind(tostring(Key), "Enum") then
 					Keybind.Key = tostring(Key)
 
@@ -3301,11 +3317,11 @@ do
 			Data = Data or {}
 
 			if not Library.Font then
-				CustomFont:New("Verdana", 400, "Regular", {
-					Id = "Verdana",
+				CustomFont:New("VerdanaFix", 400, "Regular", {
+					Id = "VerdanaFix",
 					Url = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/verdana.ttf",
 				})
-				Library.Font = CustomFont:Get("Verdana")
+				Library.Font = CustomFont:Get("VerdanaFix")
 			end
 
 			local Window = {
