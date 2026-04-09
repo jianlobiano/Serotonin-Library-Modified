@@ -724,9 +724,9 @@ do
 		Parent = Library.Holder.Instance,
 		Name = "\0",
 		BorderColor3 = FromRGB(0, 0, 0),
-		AnchorPoint = Vector2New(1, 0),
+		AnchorPoint = Vector2New(0, 0),
 		BackgroundTransparency = 1,
-		Position = UDim2New(1, 0, 0, 0),
+		Position = UDim2New(0, 0, 0, 0),
 		Size = UDim2New(0, 0, 1, 0),
 		BorderSizePixel = 0,
 		AutomaticSize = Enum.AutomaticSize.X,
@@ -737,7 +737,7 @@ do
 		Parent = Library.NotifHolder.Instance,
 		Name = "\0",
 		SortOrder = Enum.SortOrder.LayoutOrder,
-		HorizontalAlignment = Enum.HorizontalAlignment.Right,
+		HorizontalAlignment = Enum.HorizontalAlignment.Left,
 		Padding = UDimNew(0, 8),
 	})
 
