@@ -5283,7 +5283,7 @@ do
 					})
 					BtnItems["Text"]:AddToTheme({ TextColor3 = "Text" })
 
-					BtnItems["Button"]:OnClick(function()
+					BtnItems["Button"]:Connect("MouseButton1Click", function()
 						Listbox.Value = Value
 						for _, b in ObjectItems do UpdateState(b, b.Name) end
 						Library:SafeCallback(Listbox.Callback, Listbox.Value)
@@ -5326,7 +5326,9 @@ do
 			end
 
 			Library.Flags[Listbox.Flag] = Listbox.Value
-			Library.Items[Listbox.Flag] = Listbox
+			Library.SetFlags[Listbox.Flag] = function(Value)
+				Listbox:Set(Value)
+			end
 
 			return Listbox
 		end
