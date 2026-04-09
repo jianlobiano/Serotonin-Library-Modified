@@ -5197,7 +5197,7 @@ do
 				Name = "\0",
 				Color = FromRGB(46, 52, 61),
 				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-			}):AddToTheme({ Color = "Stroke" })
+			}):AddToTheme({ Color = "Border" })
 
 			Instances:Create("UICorner", {
 				Parent = Items["ListInner"].Instance,
@@ -5216,7 +5216,7 @@ do
 				ScrollBarThickness = 3,
 				Size = UDim2New(1, 0, 1, 0),
 			})
-			Items["ScrollingFrame"]:AddToTheme({ ScrollBarImageColor3 = "Stroke" })
+			Items["ScrollingFrame"]:AddToTheme({ ScrollBarImageColor3 = "Border" })
 
 			Items["UIListLayout"] = Instances:Create("UIListLayout", {
 				Parent = Items["ScrollingFrame"].Instance,
@@ -5257,7 +5257,7 @@ do
 						Text = "",
 						AutoButtonColor = false
 					})
-					BtnItems["Button"]:AddToTheme({ BackgroundColor3 = "Stroke" })
+					BtnItems["Button"]:AddToTheme({ BackgroundColor3 = "Element" })
 
 					Instances:Create("UIPadding", {
 						Parent = BtnItems["Button"].Instance,
