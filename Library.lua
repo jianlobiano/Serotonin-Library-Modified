@@ -2142,7 +2142,11 @@ do
 			local Update = function()
 				if KeyListItem then
 					KeyListItem:SetText(Data.Name, Keybind.Value)
-					KeyListItem:SetStatus(Keybind.Toggled)
+					if Keybind.ForceHide then
+						KeyListItem:SetStatus(false)
+					else
+						KeyListItem:SetStatus(Keybind.Toggled)
+					end
 				end
 			end
 
@@ -2362,6 +2366,11 @@ do
 					Library:SafeCall(Data.Callback, Keybind.Toggled)
 				end
 
+				Update()
+			end
+
+			function Keybind:SetVisibleInList(Bool)
+				Keybind.ForceHide = not Bool
 				Update()
 			end
 
@@ -5133,6 +5142,193 @@ do
 			end
 
 			return Dropdown
+		end
+
+				Library.Sections.Listbox = function(self, Data)
+			Data = Data or {}
+
+			local Listbox = {
+				Window = self.Window,
+				Page = self.Page,
+				Section = self,
+				Name = Data.Name or Data.name or "Listbox",
+				Flag = Data.Flag or Data.flag or Library:NextFlag(),
+				Items = Data.Items or Data.items or Data.Options or Data.options or { "One", "Two", "Three" },
+				MaxSize = Data.MaxSize or Data.maxSize or 150,
+				Callback = Data.Callback or Data.callback or function() end,
+				Value = Data.Default or Data.default or "",
+			}
+
+			local Items = {}
+
+			Items["Listbox"] = Instances:Create("Frame", {
+				Parent = Listbox.Section.Items["Content"].Instance,
+				Name = "\0",
+				BackgroundTransparency = 1,
+				Size = UDim2New(1, 0, 0, Listbox.MaxSize + 10),
+			})
+
+			Items["ListboxLabel"] = Instances:Create("TextLabel", {
+				Parent = Items["Listbox"].Instance,
+				Name = "\0",
+				FontFace = Library.Font,
+				TextColor3 = FromRGB(255, 255, 255),
+				TextTransparency = 0.5,
+				Text = Listbox.Name,
+				BackgroundTransparency = 1,
+				Size = UDim2New(0, 0, 0, 15),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				TextYAlignment = Enum.TextYAlignment.Center,
+				TextSize = 14,
+			})
+			Items["ListboxLabel"]:AddToTheme({ TextColor3 = "Text" })
+
+			Items["ListInner"] = Instances:Create("Frame", {
+				Parent = Items["Listbox"].Instance,
+				Name = "\0",
+				BackgroundColor3 = FromRGB(35, 41, 50),
+				Position = UDim2New(0, 0, 0, 21),
+				Size = UDim2New(1, 0, 1, -21),
+			})
+			Items["ListInner"]:AddToTheme({ BackgroundColor3 = "Element" })
+
+			Instances:Create("UIStroke", {
+				Parent = Items["ListInner"].Instance,
+				Name = "\0",
+				Color = FromRGB(46, 52, 61),
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			}):AddToTheme({ Color = "Stroke" })
+
+			Instances:Create("UICorner", {
+				Parent = Items["ListInner"].Instance,
+				Name = "\0",
+				CornerRadius = UDimNew(0, 3),
+			})
+
+			Items["ScrollingFrame"] = Instances:Create("ScrollingFrame", {
+				Parent = Items["ListInner"].Instance,
+				Name = "\0",
+				Active = true,
+				BackgroundColor3 = FromRGB(255, 255, 255),
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				ScrollBarImageColor3 = FromRGB(46, 52, 61),
+				ScrollBarThickness = 3,
+				Size = UDim2New(1, 0, 1, 0),
+			})
+			Items["ScrollingFrame"]:AddToTheme({ ScrollBarImageColor3 = "Stroke" })
+
+			Items["UIListLayout"] = Instances:Create("UIListLayout", {
+				Parent = Items["ScrollingFrame"].Instance,
+				Name = "\0",
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			})
+			Items["UIListLayout"]:Connect("GetPropertyChangedSignal", function()
+				Items["ScrollingFrame"].Instance.CanvasSize = UDim2New(0, 0, 0, Items["UIListLayout"].Instance.AbsoluteContentSize.Y)
+			end, "AbsoluteContentSize")
+
+			local function UpdateState(Btn, Name)
+				if Listbox.Value == Name then
+					Btn.Items["Text"]:Tween(nil, { TextTransparency = 0 })
+					Btn.Items["Button"]:Tween(nil, { BackgroundTransparency = 0 })
+				else
+					Btn.Items["Text"]:Tween(nil, { TextTransparency = 0.5 })
+					Btn.Items["Button"]:Tween(nil, { BackgroundTransparency = 1 })
+				end
+			end
+
+			local ObjectItems = {}
+			local function UpdateButtons()
+				for Index, Value in ObjectItems do
+					Value.Items["Button"].Instance:Destroy()
+					Value = nil
+				end
+				table.clear(ObjectItems)
+
+				for Index, Value in Listbox.Items do
+					local BtnItems = {}
+					BtnItems["Button"] = Instances:Create("TextButton", {
+						Parent = Items["ScrollingFrame"].Instance,
+						Name = "\0",
+						BackgroundColor3 = FromRGB(46, 52, 61),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Size = UDim2New(1, 0, 0, 25),
+						Text = "",
+						AutoButtonColor = false
+					})
+					BtnItems["Button"]:AddToTheme({ BackgroundColor3 = "Stroke" })
+
+					Instances:Create("UIPadding", {
+						Parent = BtnItems["Button"].Instance,
+						Name = "\0",
+						PaddingBottom = UDimNew(0, 0),
+						PaddingLeft = UDimNew(0, 7),
+						PaddingRight = UDimNew(0, 7),
+						PaddingTop = UDimNew(0, 0)
+					})
+
+					BtnItems["Text"] = Instances:Create("TextLabel", {
+						Parent = BtnItems["Button"].Instance,
+						Name = "\0",
+						FontFace = Library.Font,
+						TextColor3 = FromRGB(255, 255, 255),
+						TextTransparency = 0.5,
+						Text = Value,
+						BackgroundTransparency = 1,
+						Size = UDim2New(1, 0, 1, 0),
+						TextSize = 14,
+						TextWrapped = true,
+						TextXAlignment = Enum.TextXAlignment.Center
+					})
+					BtnItems["Text"]:AddToTheme({ TextColor3 = "Text" })
+
+					BtnItems["Button"]:OnClick(function()
+						Listbox.Value = Value
+						for _, b in ObjectItems do UpdateState(b, b.Name) end
+						Library:SafeCallback(Listbox.Callback, Listbox.Value)
+						Library.Flags[Listbox.Flag] = Listbox.Value
+					end)
+
+					BtnItems["Button"]:OnHover(function()
+						if Listbox.Value ~= Value then
+							BtnItems["Text"]:Tween(nil, { TextTransparency = 0 })
+						end
+					end)
+
+					BtnItems["Button"]:OnHoverLeave(function()
+						if Listbox.Value ~= Value then
+							BtnItems["Text"]:Tween(nil, { TextTransparency = 0.5 })
+						end
+					end)
+
+					table.insert(ObjectItems, { Items = BtnItems, Name = Value })
+					UpdateState({Items = BtnItems}, Value)
+				end
+			end
+
+			UpdateButtons()
+
+			function Listbox:Get()
+				return Listbox.Value
+			end
+
+			function Listbox:Set(Option)
+				Listbox.Value = Option
+				for _, b in ObjectItems do UpdateState(b, b.Name) end
+				Library:SafeCallback(Listbox.Callback, Listbox.Value)
+				Library.Flags[Listbox.Flag] = Listbox.Value
+			end
+
+			function Listbox:SetItems(Options)
+				Listbox.Items = Options
+				UpdateButtons()
+			end
+
+			Library.Flags[Listbox.Flag] = Listbox.Value
+			Library.Items[Listbox.Flag] = Listbox
+
+			return Listbox
 		end
 
 		Library.Sections.Label = function(self, Name)
