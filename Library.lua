@@ -3401,11 +3401,19 @@ do
 			end
 
 			function TargetHud:SetPlayer(Player)
-				local AvatarContent = Players:GetUserThumbnailAsync(
-					Player.UserId,
-					Enum.ThumbnailType.HeadShot,
-					Enum.ThumbnailSize.Size420x420
-				)
+				if not Player then
+					return
+				end
+				local okThumb, AvatarContent = pcall(function()
+					return Players:GetUserThumbnailAsync(
+						Player.UserId,
+						Enum.ThumbnailType.HeadShot,
+						Enum.ThumbnailSize.Size420x420
+					)
+				end)
+				if not okThumb or type(AvatarContent) ~= "string" or AvatarContent == "" then
+					AvatarContent = string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=420&h=420", Player.UserId)
+				end
 				Items["Avatar"].Instance.Image = AvatarContent
 				Items["Username"].Instance.Text = Player.DisplayName .. " (@" .. Player.Name .. ")"
 			end
@@ -5932,4 +5940,3 @@ end
 
 getgenv().Library = Library
 return Library 
-
